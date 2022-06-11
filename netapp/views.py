@@ -123,6 +123,10 @@ class LoadCollections(APIView):
         return response
 
     def post(self, request):
+        token = request.COOKIES.get('jwt')
+        if not token:
+            raise AuthenticationFailed('Unauthenticated')
+        
         data  = request.data
         collection1 = Collections.objects.create(title=data['title'], description=data['description'])
         collection1.save()
@@ -189,8 +193,7 @@ class LoadCollectionItem(APIView):
         response = Response()
         response.data = {
             "title": data['title'],
-            "description": data['description'],
-            "movies": movies
+            "description": data['description']
         }
         return response
 
